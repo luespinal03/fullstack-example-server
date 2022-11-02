@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const { uuid } = require("uuidv4");
 
 const { db } = require("../mongo");
 
@@ -29,10 +30,10 @@ router.get('/all', async function (req, res, next) {
 });
 
 
-
+//  GET-one id number route
 router.get('/get-one/:id', async function (req, res, next) {
     try {
-        // id given through request.params.id
+        // id given through request.params.id(params means the user inputs it)
         const idParam = req.params.id;
 
         const blogPost = await db()
@@ -46,9 +47,65 @@ router.get('/get-one/:id', async function (req, res, next) {
             post: blogPost
         })
     }
-    catch {
-
+    catch (err) {
+        console.log(err)
+        res.json({
+            success: false,
+            error: err.toString()
+        })
     }
 })
+
+
+// create-one route
+router.post('/create-one', async function (req, res, next) {
+    try {
+        console.log(req.body)
+        // copies the key value pairs from req.body into newBlog
+        const newBlog = {
+            ...req.body,
+            createdAt: new Date(),
+            lastModified: new Date(),
+            id: uuid()
+        }
+
+
+        console.log(newBlog)
+
+        const result = await db().collection('BlogsDB').insertOne(newBlog)
+
+
+        console.log(result);
+
+        res.json({
+            success: true,
+        })
+
+    }
+
+    catch (err) {
+        console.log(err)
+        res.json({
+            success: false,
+            error: err.toString()
+        })
+    }
+})
+
+
+// update-one route STLL working on it
+router.post('/update-one', async function (req, res, next) {
+    try {
+        console.log(req.body)
+    }
+    catch (err) {
+        console.log(err)
+        res.json({
+            success: false,
+            error: err.toString()
+        })
+    }
+})
+
 
 module.exports = router;
