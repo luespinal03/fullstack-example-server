@@ -94,9 +94,21 @@ router.post('/create-one', async function (req, res, next) {
 
 
 // update-one route STLL working on it
-router.post('/update-one', async function (req, res, next) {
+router.put('/update-one/:id', async function (req, res, next) {
     try {
         console.log(req.body)
+        const id = req.params.id
+        const starRating = req.body.starRating
+        const lastModified = new Date()
+        const title = req.body.title;
+
+        const blogPost = await db().collection("BlogsDB").update({ id: id }, { $set: { "starRating": starRating, "lastModified": lastModified, "title": title } })
+
+        res.json({
+            success: true,
+            post: blogPost
+        })
+
     }
     catch (err) {
         console.log(err)
