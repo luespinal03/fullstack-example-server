@@ -102,7 +102,32 @@ router.put('/update-one/:id', async function (req, res, next) {
         const lastModified = new Date()
         const title = req.body.title;
 
+        // $set overrides any field we specify in the array of objects
         const blogPost = await db().collection("BlogsDB").update({ id: id }, { $set: { "starRating": starRating, "lastModified": lastModified, "title": title } })
+
+        res.json({
+            success: true,
+            post: blogPost
+        })
+
+    }
+    catch (err) {
+        console.log(err)
+        res.json({
+            success: false,
+            error: err.toString()
+        })
+    }
+})
+
+
+
+router.delete('/delete-one/:id', async function (req, res, next) {
+    try {
+        const id = req.params.id
+
+
+        const blogPost = await db().collection("BlogsDB").deleteOne({ id: id })
 
         res.json({
             success: true,
